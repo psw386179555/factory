@@ -3,3 +3,4 @@ runtime/*
 public/uploads
 public/cms
 log
+application/database.php
