@@ -1,0 +1,5 @@
+# Created by .ignore support plugin (hsz.mobi)
+runtime/*
+public/uploads
+public/cms
+log
