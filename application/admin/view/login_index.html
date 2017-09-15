@@ -1,0 +1,68 @@
+{extend name="layout"}
+
+
+
+{block name="head"}
+<link rel="stylesheet" href="LAYUI_css/login.css">
+
+<script>
+    layui.use(['form','layer'], function(){
+        var form = layui.form();
+        var $ = layui.jquery;
+        form.on("submit(login)", function(data){
+//            layer.msg(JSON.stringify(data.field));
+//            console.log(data);
+            $.ajax({
+                url: "{:url('admin/login/login')}",
+                data:{
+                    username:data.field.username,
+                    password:data.field.password
+                },
+                dataType:'json',
+                success: function(res){
+                    setTimeout(function () {
+                        window.location.href = "{:url('admin/index/index')}";
+                    },2000);
+                    layer.msg('登录成功,正在跳转...',{icon:1})
+                },
+                error:function (res) {
+                    layer.msg('登录失败',{icon:2})
+                }
+            });
+            return false;
+        });
+    });
+</script>
+{/block}
+
+{block name="header"}
+
+{/block}
+
+{block name="content"}
+<img src="admin_img/login_bg.jpg" class="login_bg" alt="">
+
+
+<div class="login">
+    <h1>SvenBarnett-CMS</h1>
+    <form class="layui-form">
+        <div class="layui-form-item">
+            <input class="layui-input" name="username" placeholder="用户名" lay-verify="required" type="text" autocomplete="off">
+        </div>
+        <div class="layui-form-item">
+            <input class="layui-input" name="password" placeholder="密码" lay-verify="required" type="password" autocomplete="off">
+        </div>
+        <button class="layui-btn login_btn" lay-submit="*"  lay-filter="login">登录</button>
+        <div class="layui-form-item fly-form-app"  style="color: white;">
+            <span>或者使用社交账号登入</span>
+            <a onclick="layer.msg('暂时不支持', {icon:2, shade:0.2, time:2000})" class="iconfont icon-qq" title="QQ登入"></a>
+        </div>
+    </form>
+</div>
+
+{/block}
+
+
+{block name="footer"}
+
+{/block}

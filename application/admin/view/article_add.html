@@ -1,0 +1,170 @@
+{extend name="layout"}
+
+{block name="head"}
+<script>
+    layui.use(['laydate','layer','form','layedit','upload'],function () {
+        var form = layui.form();
+        var layedit = layui.layedit;
+        var $=layui.jquery;
+
+
+        layui.upload({
+            url: "{:url('admin/Upload/uploadImg')}",
+            elem: '#uploadBtn',
+            success: function(res){
+                console.log(res);
+                LAY_demo_upload.src = res.data.src;
+                $('#imgsrc').val(res.data.img_id);
+            },
+            error:function (res) {
+                console.log(LAY_demo_upload.src);
+            }
+        });
+
+
+
+        layedit.set({
+            uploadImage: {
+                url: "{:url('admin/upload/uploadImg')}",
+                type: 'post',//默认post
+                success:function (res) {
+                    console.log(res);
+                }
+            }
+        });
+
+        var index=layedit.build('layedit',{
+            tool: [
+                'strong' //加粗
+                ,'italic' //斜体
+                ,'underline' //下划线
+                ,'del' //删除线
+                ,'|' //分割线
+                ,'left' //左对齐
+                ,'center' //居中对齐
+                ,'right' //右对齐
+                ,'face' //表情
+                ,'image' //插入图片
+            ]
+        });
+        //监听提交
+        form.on('submit(addArticle)', function(data){
+            var rr = layedit.getContent(index);
+
+            data.field['content']= rr ;
+
+            delete data.field.file;//删除多余字段
+
+            delete data.field.image;//删除多余字段
+
+            console.log( data.field);
+
+            $.ajax({
+                url:"{:url('admin/article/add')}",
+                data:data.field,
+                dataType:'json',
+                type:'post',
+                success:function (res) {
+                    console.log(res);
+                    layer.msg(res.msg,{icon:1,time:2000});
+                    setTimeout(function () {
+                        window.location.href="{:url('index')}";
+                    })
+                }
+            });
+
+            return false;
+        });
+
+    })
+</script>
+
+
+
+<style>
+    .site-demo-upload img{
+        position: relative;
+    }
+    .site-demo-upload .site-demo-upbar{
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        margin: -18px 0 0 -56px;
+    }
+
+</style>
+{/block}
+
+{block name="content-main"}
+
+<blockquote class="layui-elem-quote news_search">
+    后台文章通知管理
+</blockquote>
+<form class="layui-form">
+    <div class="layui-form-item">
+        <label class="layui-form-label">文章标题</label>
+        <div class="layui-input-block">
+            <input type="text" name="title" class="layui-input newsName" lay-verify="required" placeholder="请输入文章标题">
+        </div>
+    </div>
+
+    <div class="layui-form-item">
+        <label class="layui-form-label">封面图片</label>
+        <div class="layui-input-inline">
+            <div class="site-demo-upload">
+                <img id="LAY_demo_upload" style="width:190px" src="">
+                <div class="site-demo-upbar">
+                    <input type="file" name="image" class="layui-upload-file" id="uploadBtn">
+                    <input type="hidden" name="img_id" lay-verify="required"  id="imgsrc">
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    <div class="layui-form-item">
+        <div class="layui-inline">
+            <label class="layui-form-label">文章作者</label>
+            <div class="layui-input-inline">
+                <input type="text" name="author" class="layui-input newsAuthor" lay-verify="required" placeholder="请输入文章作者">
+            </div>
+        </div>
+
+        <div class="layui-inline">
+            <label class="layui-form-label">文章类型</label>
+            <div class="layui-input-inline">
+                <select name="type" class="newsLook" lay-filter="browseLook">
+                    <option value="0">资讯</option>
+                    <option value="1">案例</option>
+                    <option value="2">产品</option>
+                    <option value="3">通知</option>
+                </select>
+            </div>
+        </div>
+    </div>
+    <div class="layui-form-item">
+        <label class="layui-form-label">关键字</label>
+        <div class="layui-input-block">
+            <input type="text" name="keyword" class="layui-input" placeholder="请输入文章关键字">
+        </div>
+    </div>
+    <div class="layui-form-item">
+        <label class="layui-form-label">内容摘要</label>
+        <div class="layui-input-block">
+            <textarea name="sum" placeholder="请输入内容摘要" class="layui-textarea"></textarea>
+        </div>
+    </div>
+    <div class="layui-form-item">
+        <label class="layui-form-label">文章内容</label>
+        <div class="layui-input-block">
+            <div class="layui-textarea layui-hide" lay-verify="content" id="layedit"></div>
+        </div>
+    </div>
+    <div class="layui-form-item">
+        <div class="layui-input-block">
+            <button class="layui-btn" lay-submit lay-filter="addArticle">立即提交</button>
+            <button type="reset" class="layui-btn layui-btn-primary">重置</button>
+        </div>
+    </div>
+</form>
+{/block}

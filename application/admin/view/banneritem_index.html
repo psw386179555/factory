@@ -1,0 +1,171 @@
+{extend name="layout"}
+
+{block name="head"}
+<script>
+    layui.use(['layer','form','upload'],function () {
+        var form = layui.form();
+        var $=layui.jquery;
+
+        $('.articleId').click(function () {
+            layer.tips('提前在文章管理中选择好id', '.articleId', {
+                tips: [2, '#3595CC'],
+                time: 3000
+            });
+        });
+
+        layui.upload({
+            url: "{:url('admin/Upload/uploadImg')}",
+            elem: '#uploadBtn',
+            success: function(res){
+                console.log(res);
+                LAY_demo_upload.src = res.data.src;
+                $('#imgsrc').val(res.data.img_id);
+            },
+            error:function (res) {
+                console.log(LAY_demo_upload.src);
+            }
+        });
+
+
+        //监听提交
+        form.on('submit(addBanner)', function(data){
+
+            delete data.field.file;//删除多余字段
+            delete data.field.image;//删除多余字段
+
+            console.log( data.field);
+//            return false;
+
+            $.ajax({
+                url:"{:url('admin/banneritem/index')}",
+                data:data.field,
+                dataType:'json',
+                type:'post',
+                success:function (res) {
+                    console.log(res);
+                    layer.msg('添加成功！',{icon:1,time:2000});
+                    setTimeout(function () {
+                        window.location.href="{:url('index')}"+"/id/"+data.field.banner_id;
+                    },1000)
+                }
+            });
+
+            return false;
+        });
+
+    })
+</script>
+
+
+
+<style>
+    .site-demo-upload img{
+        position: relative;
+    }
+    .site-demo-upload .site-demo-upbar{
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        margin: -18px 0 0 -56px;
+    }
+
+</style>
+{/block}
+
+{block name="content-main"}
+
+<blockquote class="layui-elem-quote news_search">
+    添加轮播图图片
+</blockquote>
+<form class="layui-form">
+    <div class="layui-form-item title">
+        <label class="layui-form-label">轮播图标题</label>
+        <div class="layui-input-block">
+            <input type="text" name="title" class="layui-input newsName" lay-verify="required" placeholder="不超过15字！">
+        </div>
+    </div>
+
+    <div class="layui-form-item">
+        <label class="layui-form-label">轮播图片</label>
+        <div class="layui-input-inline">
+            <div class="site-demo-upload">
+                <img id="LAY_demo_upload" style="width:190px" src="">
+                <div class="site-demo-upbar">
+                    <input type="file" name="image" class="layui-upload-file" id="uploadBtn">
+                    <input type="hidden" name="img_id" lay-verify="required"  id="imgsrc">
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    <div class="layui-form-item ">
+        <div class="layui-inline articleId">
+            <label class="layui-form-label">链接文章ID</label>
+            <div class="layui-input-inline">
+                <input type="text" name="article_id" class="layui-input" lay-verify="required|number" placeholder="文章id">
+            </div>
+        </div>
+
+        <div class="layui-inline  teamId">
+            <label class="layui-form-label">轮播组号</label>
+            <div class="layui-input-inline">
+                <input type="text" disabled="true" name="banner_id" class="layui-input" lay-verify="required|number" value="{$banner_id}">
+            </div>
+        </div>
+    </div>
+
+
+
+    <div class="layui-form-item">
+        <div class="layui-input-block">
+            <button class="layui-btn" lay-submit lay-filter="addBanner">添加</button>
+        </div>
+    </div>
+</form>
+
+<div class="layui-form data_list">
+    <table class="layui-table">
+        <colgroup>
+            <col width="45">
+            <col>
+            <col>
+            <col  width="10%">
+            <col>
+            <col width="10%">
+            <col width="15%">
+        </colgroup>
+        <thead>
+        <tr>
+            <th><input type="checkbox" name="" lay-skin="primary" lay-filter="allChoose" id="allChoose"></th>
+             <th  style="text-align:left;">标题</th>
+            <th>对应的文章</th>
+            <th>图片</th>
+            <th>创建时间</th>
+            <th>状态</th>
+            <th>操作</th>
+        </tr>
+        </thead>
+        <tbody class="data_content">
+        {volist name="item" id="vo"}
+        <tr>
+            <td><input type="checkbox" name="checked" lay-skin="primary" lay-filter="choose"></td>
+            <td>{$vo.title}</td>
+            <td>{$vo.article_id}</td>
+            <td onclick="layer.photos({photos:this,anim:5});" class="layer-photos"><img layer-src="{$vo.img.img_url}" src="{$vo.img.img_url}" width="50px;" alt=""></img></td>
+
+            <td>{$vo.create_time}</td>
+            <td>{$vo.status}</td>
+            <td>
+                <a href="{:url('change',['status'=>$vo['status'],'id'=>$vo['id'],'banner_id'=>$vo['banner_id']])}" class="layui-btn layui-btn-danger layui-btn-mini users_del" data-id=""><i class="layui-icon">&#xe642;</i>更改状态</a>
+            </td>
+        </tr>
+        {/volist}
+        {empty name="item"}
+        <tr><td colspan="8">暂无数据</td></tr>
+        {/empty}
+        </tbody>
+    </table>
+</div>
+<div id="page"></div>
+{/block}

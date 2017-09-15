@@ -1,0 +1,114 @@
+{extend name="layout"}
+
+{block name="head"}
+ <script>
+     layui.use(['upload','form'],function () {
+         var form = layui.form();
+         layui.upload({
+             url: "{:url('admin/Upload/uploadImg')}",
+             elem: '#uploadBtn',
+             success: function(res){
+                 console.log(res);
+                 LAY_demo_upload.src = res.data.src;
+             },
+             error:function (res) {
+                 console.log(LAY_demo_upload.src);
+             }
+         });
+     })
+ </script>
+
+<style>
+    .site-demo-upload img{
+        position: relative;
+    }
+   .site-demo-upload .site-demo-upbar{
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        margin: -18px 0 0 -56px;
+    }
+
+</style>
+{/block}
+
+{block name="content-main"}
+<span class="layui-breadcrumb">
+      <a href="">用户管理</a>
+      <a><cite>修改管理员信息</cite></a>
+</span>
+<blockquote class="layui-elem-quote news_search">
+    修改用户信息
+</blockquote>
+
+<form class="layui-form" action="">
+    <div class="layui-form-item">
+        <label class="layui-form-label">姓名</label>
+        <div class="layui-input-inline">
+            <input type="text" name="name" lay-verify="required" autocomplete="off" placeholder="请输入真实姓名" class="layui-input">
+        </div>
+    </div>
+
+    <div class="layui-form-item">
+        <label class="layui-form-label">性别</label>
+        <div class="layui-input-block">
+            <input type="radio" name="sex" value="男" title="男" checked="">
+            <input type="radio" name="sex" value="女" title="女">
+            <!--<input type="radio" name="sex" value="禁" title="禁用" disabled="">-->
+        </div>
+    </div>
+    <div class="layui-form-item">
+        <label class="layui-form-label">头像</label>
+        <div class="layui-input-inline">
+            <div class="site-demo-upload">
+                <img id="LAY_demo_upload" class="layui-circle" style="width:190px;height:190px;" src="http://img.jsqq.net/uploads/allimg/150111/1_150111080328_19.jpg">
+                <div class="site-demo-upbar">
+                    <input type="file" name="image" class="layui-upload-file" id="uploadBtn">
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="layui-form-item">
+        <label class="layui-form-label">登录名</label>
+        <div class="layui-input-inline">
+            <input type="text" name="username" lay-verify="required" placeholder="请输入" autocomplete="off" class="layui-input">
+        </div>
+    </div>
+
+    <div class="layui-form-item">
+        <label class="layui-form-label">原始密码</label>
+        <div class="layui-input-inline">
+            <input type="password" name="oldPassword" lay-verify="pass" placeholder="请输入原密码" autocomplete="off" class="layui-input">
+        </div>
+        <div class="layui-form-mid layui-word-aux">请填写6到12位密码</div>
+    </div>
+
+    <div class="layui-form-item">
+        <label class="layui-form-label">新密码</label>
+        <div class="layui-input-inline">
+            <input type="password" name="password" lay-verify="pass" placeholder="请输入新密码" autocomplete="off" class="layui-input">
+        </div>
+        <div class="layui-form-mid layui-word-aux">请填写6到12位密码</div>
+    </div>
+
+    <div class="layui-form-item">
+        <label class="layui-form-label">确认新密码</label>
+        <div class="layui-input-inline">
+            <input type="password" name="confirmPassword" lay-verify="pass" placeholder="再次输入密码" autocomplete="off" class="layui-input">
+        </div>
+        <div class="layui-form-mid layui-word-aux">请填写6到12位密码</div>
+    </div>
+
+    <div class="layui-form-item">
+        <div class="layui-input-block">
+            <button class="layui-btn" lay-submit lay-filter="doForm">立即提交</button>
+            <button type="reset" class="layui-btn layui-btn-primary">重置</button>
+        </div>
+    </div>
+
+
+</form>
+
+
+{/block}

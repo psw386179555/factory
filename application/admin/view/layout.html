@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+
+    {block name="title"}<title>{$title}</title>{/block}
+
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+    <meta name="keywords" content="">
+
+    <meta name="description" content="">
+
+    <link rel="stylesheet" href="myFont/style.css">
+
+    <link rel="stylesheet" href="LAYUI_css/layui.css">
+
+    <link rel="stylesheet" href="LAYUI_css/global.css">
+
+
+    <link rel="stylesheet" type="text/css" href="admin_css/style.css">
+
+    <script src="LAYUI/layui.js"></script>
+
+    <script>
+        layui.use(['form','element','layer'],function () {
+            var element=layui.element();
+            var form=layui.form();
+            var $ =layui.jquery;
+
+            // 预览图片
+
+            $('.layer-photos').click(function () {
+                console.log('ddd');
+                layer.photos({
+                    photos: $('.layer-photos')
+                });
+            });
+
+            $('.logoutBtn').click(function () {
+                $.ajax({
+                    url:"{:url('admin/login/logout')}",
+                    dataType:'json',
+                    success:function (res) {
+                        setTimeout(function () {
+                            location.reload();
+                        },2000);
+                        layer.msg(res.msg,{icon:1,time:2000})
+                    }
+
+                })
+            });
+
+            $('.infoBtn').click(function () {
+                window.location.href="{:url('admin/member/info')}";
+            });
+            
+           $('.clearCache').click(function () {
+               var index=layer.msg('正在清除缓存...',{icon:16,time:2000,shade:0.2})
+               $.ajax({
+                   url:"{:url('admin/base/clearCache')}",
+                   dataType:'json',
+                   success:function (res) {
+                       layer.close(index);
+                       layer.msg(res.msg,{icon:1,time:500});
+                   }
+               })
+           });
+
+           $('.weibo').click(function () {
+//               window.location.href="http://weibo.com/u/5285244109";
+               window.open("http://weibo.com/u/5285244109");
+           })    ;
+
+        })
+    </script>
+    <style>
+        .footer{
+            background-color: #393D49;
+        }
+        .relate span{
+            cursor:pointer;
+        }
+        .relate span:hover
+        {
+            color:darkgrey;
+        }
+        .layer-photos{
+            cursor: pointer;
+        }
+    </style>
+
+    {block name="head"}
+
+    {/block}
+
+</head>
+<body>
+{block name="header"}
+<!--头部开始-->
+<div class="header">
+    <div class="main">
+            <div class="nav shake-vertical-slow" style="left: 0px;">
+                <a class="nav-this" href="/">
+                    <i class="myfont my-logo" style="color: darkorange;"></i>SvenBarnett云服务管理平台
+                </a>
+            </div>
+
+        <div class="nav-user">
+            <a class="avatar infoBtn" href="javascript:">
+                <img src="http://tp4.sinaimg.cn/1345566427/180/5730976522/0">
+                <cite>{$Think.session.userinfo.username}</cite>
+                <i>管理员</i>
+            </a>
+            <div class="nav">
+                <a href="javascript:" class="clearCache"><i class="layui-icon layui-anim layui-anim-rotate layui-anim-loop">&#x1002;</i>清除缓存</a>
+                <a href="javascript:" class="logoutBtn"><i class="iconfont icon-tuichu" style="top: 0; font-size: 22px;"></i>退出</a>
+            </div>
+
+        </div>
+    </div>
+</div>
+<!--头部结束-->
+{/block}
+
+{block name="content"}
+<div class="main fly-user-main layui-clear">
+
+    <!--左边栏开始-->
+    <ul class="layui-nav layui-nav-tree layui-inline" lay-filter="user">
+        <li class="layui-nav-item {$tab=='index'? 'layui-this' : ''}">
+            <a href="{:url('admin/index/index')}">
+                <i class="layui-icon">&#xe628;</i>
+                控制台
+            </a>
+        </li>
+        <li class="layui-nav-item {$tab=='member'? 'layui-this' : ''}">
+            <a href="{:url('admin/member/index')}">
+                <i class="layui-icon">&#xe612;</i>
+                用户中心
+            </a>
+        </li>
+        <li class="layui-nav-item {$tab=='company'? 'layui-this' : ''}">
+            <a href="{:url('admin/company/index')}">
+                <i class="layui-icon">&#xe630;</i>
+                入驻工厂管理
+            </a>
+        </li>
+        <li class="layui-nav-item {$tab=='banner'? 'layui-this' : ''}">
+            <a href="{:url('admin/banner/index')}">
+                <i class="layui-icon">&#xe634;</i>
+                轮播图管理
+            </a>
+        </li>
+        <li class="layui-nav-item {$tab=='article'? 'layui-this' : ''}">
+            <a href="{:url('admin/article/index')}">
+                <i class="layui-icon">&#xe63c;</i>
+                文章通知管理
+            </a>
+        </li>
+        <li class="layui-nav-item {$tab=='apply'? 'layui-this' : ''}">
+            <a href="{:url('admin/apply/index')}">
+                <i class="layui-icon">&#xe60a;</i>
+                申请管理
+            </a>
+        </li>
+        <li class="layui-nav-item {$tab=='feedback'? 'layui-this' : ''}">
+            <a href="{:url('admin/feedback/index')}">
+                <i class="layui-icon">&#xe611;</i>
+                反馈管理
+            </a>
+        </li>
+    </ul>
+    <!--左边栏结束-->
+
+
+
+    <!--内容区开始-->
+
+    <div class="fly-panel fly-panel-user" pad20>
+
+
+
+        {block name="content-main"}
+
+
+        {/block}
+
+
+    </div>
+    <!--内容区结束-->
+
+
+
+
+</div>
+{/block}
+
+<!--页脚开始-->
+{block name="footer"}
+<div class="footer layui-footer">
+    <p class="shake-vertical-slow-all"><i class="myfont my-logo" style="font-size:24px;color: darkorange;"></i></p>
+    <p>Copyright &copy; 2014-2017  All Rights Reserved. SvenBarnett 版权所有.  湘ICP备16001685号-1</p>
+    <p class="relate"><span class="weibo"><i class="iconfont icon-weibo"></i> 微博联系</span> <span class="weixin"><i class="iconfont icon-qq"></i> QQ联系</span></p>
+</div>
+{/block}
+<!--页脚结束-->
+
+
+</body>
+</html>
